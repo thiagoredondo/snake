@@ -1,4 +1,6 @@
 import pygame
+import random
+
 pygame.init()
 
 # Dibujar pantalla
@@ -57,9 +59,29 @@ class Serpiente:
             self.y + self.alto > alto_pantalla
         )
 
-# Crear Serpiente
+class Comida:
+    def __init__(self, ancho, alto, ancho_pantalla, alto_pantalla):
+        self.ancho = ancho
+        self.alto = alto
+        self.ancho_pantalla = ancho_pantalla
+        self.alto_pantalla = alto_pantalla
+        self.x = 0
+        self.y = 0
+        self.generar_nueva_posicion()
+
+    def generar_nueva_posicion(self):
+        columnas = self.ancho_pantalla // self.ancho
+        filas = self.alto_pantalla // self.alto
+        self.x = random.randint(0, columnas - 1) * self.ancho
+        self.y = random.randint(0, filas - 1) * self.alto
+
+    def dibujarse(self, screen):
+        pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.ancho, self.alto))
+
+# Crear objetos
 cuadrado = Serpiente(25, 25, 25, 25, 5)
 cuadrado.mover_derecha()
+comida = Comida(25, 25, ancho_pantalla, alto_pantalla)
 
 # Bucle ppal
 jugando = True
@@ -82,12 +104,12 @@ while jugando:
 
     cuadrado.actualizar()
 
-    # Verificar si se fue de la pantalla
     if cuadrado.fuera_de_limites(ancho_pantalla, alto_pantalla):
         jugando = False
 
     screen.fill((0, 0, 0))
     cuadrado.dibujarse(screen)
+    comida.dibujarse(screen)
     pygame.display.update()
 
 pygame.quit()
