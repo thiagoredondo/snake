@@ -2,7 +2,9 @@ import pygame
 pygame.init()
 
 # Dibujar pantalla
-screen = pygame.display.set_mode((1200, 800))
+ancho_pantalla = 1200
+alto_pantalla = 800
+screen = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 pygame.display.set_caption("Snake")
 
 class Serpiente:
@@ -14,7 +16,7 @@ class Serpiente:
         self.velocidad = velocidad
         self.velocidadx = 0
         self.velocidady = 0
-        self.direccion_actual = None  # Direccion inicial
+        self.direccion_actual = None
 
     def mover_derecha(self):
         if self.direccion_actual != 'izquierda':
@@ -40,19 +42,29 @@ class Serpiente:
             self.velocidady = self.velocidad
             self.direccion_actual = 'abajo'
     
-    def dibujarse(self, screen):
+    def actualizar(self):
         self.x += self.velocidadx
         self.y += self.velocidady
+
+    def dibujarse(self, screen):
         pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, self.ancho, self.alto))
+
+    def fuera_de_limites(self, ancho_pantalla, alto_pantalla):
+        return (
+            self.x < 0 or
+            self.y < 0 or
+            self.x + self.ancho > ancho_pantalla or
+            self.y + self.alto > alto_pantalla
+        )
 
 # Crear Serpiente
 cuadrado = Serpiente(25, 25, 25, 25, 5)
-cuadrado.mover_derecha()  # Dirección inicial
+cuadrado.mover_derecha()
 
 # Bucle ppal
 jugando = True
 while jugando:
-    pygame.time.delay(30)  # Velocidad de la serpiente
+    pygame.time.delay(30)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -67,6 +79,12 @@ while jugando:
         cuadrado.mover_arriba()
     elif keys[pygame.K_DOWN]:
         cuadrado.mover_abajo()
+
+    cuadrado.actualizar()
+
+    # Verificar si se fue de la pantalla
+    if cuadrado.fuera_de_limites(ancho_pantalla, alto_pantalla):
+        jugando = False
 
     screen.fill((0, 0, 0))
     cuadrado.dibujarse(screen)
