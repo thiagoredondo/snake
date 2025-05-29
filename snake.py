@@ -1,7 +1,7 @@
 import pygame
 pygame.init()
 
-#Dibujar pantalla
+# Dibujar pantalla
 screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Snake")
 
@@ -14,36 +14,45 @@ class Serpiente:
         self.velocidad = velocidad
         self.velocidadx = 0
         self.velocidady = 0
+        self.direccion_actual = None  # Direccion inicial
 
     def mover_derecha(self):
-        self.velocidadx = self.velocidad
-        self.velocidady = 0
+        if self.direccion_actual != 'izquierda':
+            self.velocidadx = self.velocidad
+            self.velocidady = 0
+            self.direccion_actual = 'derecha'
 
     def mover_izquierda(self):
-        self.velocidadx = -self.velocidad
-        self.velocidady = 0
+        if self.direccion_actual != 'derecha':
+            self.velocidadx = -self.velocidad
+            self.velocidady = 0
+            self.direccion_actual = 'izquierda'
 
     def mover_arriba(self):
-        self.velocidadx = 0
-        self.velocidady = -self.velocidad
+        if self.direccion_actual != 'abajo':
+            self.velocidadx = 0
+            self.velocidady = -self.velocidad
+            self.direccion_actual = 'arriba'
 
     def mover_abajo(self):
-        self.velocidadx = 0
-        self.velocidady = self.velocidad
+        if self.direccion_actual != 'arriba':
+            self.velocidadx = 0
+            self.velocidady = self.velocidad
+            self.direccion_actual = 'abajo'
     
     def dibujarse(self, screen):
         self.x += self.velocidadx
         self.y += self.velocidady
         pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, self.ancho, self.alto))
 
-#Crear Serpiente
+# Crear Serpiente
 cuadrado = Serpiente(25, 25, 25, 25, 5)
-cuadrado.mover_derecha()
+cuadrado.mover_derecha()  # Dirección inicial
 
-#Bucle ppal
+# Bucle ppal
 jugando = True
 while jugando:
-    pygame.time.delay(30)  #Velocidad de la serpiente
+    pygame.time.delay(30)  # Velocidad de la serpiente
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
