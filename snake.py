@@ -4,10 +4,15 @@ import random
 pygame.init()
 
 # Configuracion
-tamano_celda = 25
-ancho_pantalla = 49 * tamano_celda
-alto_pantalla = 33 * tamano_celda
-velocidad_movimiento = tamano_celda * 6  # milisegundos entre cambios de direccion
+tamano_celda = 25 # Define el tamaño en px de la grilla al multiplicarse con ancho_grilla y alto_grilla
+ancho_grilla = 49 
+alto_grilla = 33
+velocidad_serpiente = 5 # Numero mas cerca de 0 velocidad aumenta (ms entre movimientos)
+ancho_pantalla = (ancho_grilla * tamano_celda)
+alto_pantalla = (alto_grilla * tamano_celda)
+mitad_grilla_x = ((ancho_grilla//2))*tamano_celda
+mitad_grilla_y = ((alto_grilla//2))*tamano_celda
+velocidad_movimiento = tamano_celda * velocidad_serpiente
 screen = pygame.display.set_mode((ancho_pantalla, alto_pantalla))
 pygame.display.set_caption("Snake")
 clock = pygame.time.Clock()
@@ -69,8 +74,10 @@ class Comida:
         pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.tamano, self.tamano))
 
 # Crear objetos
-cuadrado = Serpiente(tamano_celda, tamano_celda, tamano_celda)
+cuadrado = Serpiente(mitad_grilla_x, mitad_grilla_y, tamano_celda)
 comida = Comida(tamano_celda, ancho_pantalla, alto_pantalla)
+
+puntaje = 0 
 
 # Control de tiempo
 ultimo_movimiento = pygame.time.get_ticks()
@@ -100,9 +107,16 @@ while jugando:
         cuadrado.mover()
         ultimo_movimiento = ahora
 
+        # Verificar si salio de los limites
         if cuadrado.fuera_de_limites(ancho_pantalla, alto_pantalla):
             jugando = False
 
+        # Verificar colision con comida
+        if cuadrado.x == comida.x and cuadrado.y == comida.y:
+            puntaje += 10
+            comida.generar_nueva_posicion()
+
+    # Dibujar Juego
     screen.fill((0, 0, 0))
     cuadrado.dibujarse(screen)
     comida.dibujarse(screen)
