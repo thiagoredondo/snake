@@ -22,7 +22,7 @@ class Serpiente:
         self.x = x
         self.y = y
         self.tamano = tamano
-        self.direccion_actual = 'derecha'
+        self.direccion_actual = random.choice(['arriba', 'abajo', 'izquierda', 'derecha'])
 
     def mover(self):
         if self.direccion_actual == 'derecha':
